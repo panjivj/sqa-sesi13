@@ -11,6 +11,12 @@ Disusun oleh:
 | Dosen Pengampu | [Ir. DIAH ARYANI , ST, M.Kom] |
 | Kampus | Universitas Esa Unggul |
 
+## Akses Cepat
+
+- [Buka draft presentasi laporan project SQA](draft_ppt_laporan_project_sqa.pptx)
+- [Demo website pendaftaran](https://running-event.esgul.my.id)
+- [Demo dashboard admin](https://dashboard-event.esgul.my.id)
+
 # Run Event Registration PoC
 
 Proof of concept pendaftaran event lari untuk demonstrasi test automation dengan Selenium WebDriver. Repository ini menggunakan monorepo npm dan terdiri dari empat service sederhana.
