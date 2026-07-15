@@ -7,8 +7,8 @@ Disusun oleh:
 | Nama | Panji Jaya Sutra |
 | NIM | 20220801517 |
 | Program Studi | [Teknik Informatika] |
-| Mata Kuliah | Software Quality Assurance |
-| Dosen Pengampu | [Isi nama dosen] |
+| Mata Kuliah | Software Quality Assurance - CIE724 |
+| Dosen Pengampu | [Ir. DIAH ARYANI , ST, M.Kom] |
 | Kampus | Universitas Esa Unggul |
 
 # Run Event Registration PoC
