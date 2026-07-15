@@ -76,21 +76,39 @@ onMounted(loadEvent)
   <main>
     <section class="hero">
       <div class="hero__content">
-        <p class="eyebrow">Run together, finish stronger</p>
-
-        <div v-if="event" data-testid="event-details">
-          <h1 data-testid="event-name">{{ event.name }}</h1>
-          <p class="hero__description">{{ event.description }}</p>
-          <div class="event-meta">
-            <span>📅 {{ formatEventDate(event.event_date) }}</span>
-            <span>📍 {{ event.location }}</span>
+        <div class="hero__copy">
+          <div class="hero__brand">
+            <img
+              src="/logo-eue-transparent.png"
+              alt="Logo Universitas Esa Unggul"
+              data-testid="eue-logo"
+            />
           </div>
+
+          <p class="eyebrow">Run together, finish stronger</p>
+
+          <div v-if="event" data-testid="event-details">
+            <h1 data-testid="event-name">{{ event.name }}</h1>
+            <p class="hero__description">{{ event.description }}</p>
+            <div class="event-meta">
+              <span>📅 {{ formatEventDate(event.event_date) }}</span>
+              <span>📍 {{ event.location }}</span>
+            </div>
+          </div>
+
+          <p v-else-if="eventError" class="notice notice--error" data-testid="event-error">
+            {{ eventError }}
+          </p>
+          <p v-else data-testid="event-loading">Memuat informasi event...</p>
         </div>
 
-        <p v-else-if="eventError" class="notice notice--error" data-testid="event-error">
-          {{ eventError }}
-        </p>
-        <p v-else data-testid="event-loading">Memuat informasi event...</p>
+        <div class="hero__visual">
+          <img
+            src="/running-peoples-eue-transparent.png"
+            alt="Dua peserta muda sedang berlari"
+            data-testid="hero-runners"
+          />
+        </div>
       </div>
     </section>
 
