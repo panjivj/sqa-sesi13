@@ -1,0 +1,15 @@
+{
+  "registrationSuccess": {
+    "name": "Selenium Test {{runId}}",
+    "email": "selenium.{{runId}}@example.com",
+    "phone": "081234567890",
+    "gender": "Laki-laki",
+    "birthDate": "2000-01-15",
+    "address": "Jl. Automation No. 5, Jakarta",
+    "raceCategory": "10K",
+    "shirtSize": "L",
+    "emergencyName": "Kontak Selenium",
+    "emergencyPhone": "081298765432",
+    "medicalCondition": "Tidak ada"
+  }
+}

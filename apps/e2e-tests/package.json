@@ -1,0 +1,14 @@
+{
+  "name": "@run-event/e2e-tests",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test:dev": "node test/registration.test.js --mode dev",
+    "test:prod": "node test/registration.test.js --mode prod"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "selenium-webdriver": "^4.46.0"
+  }
+}

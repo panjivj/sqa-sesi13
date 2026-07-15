@@ -1,0 +1,14 @@
+.git
+.gitignore
+.env*
+node_modules
+**/node_modules
+**/dist
+**/data
+**/screenshots
+coverage
+*.db
+*.db-shm
+*.db-wal
+npm-debug.log*
+.DS_Store

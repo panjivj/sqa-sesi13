@@ -1,0 +1,93 @@
+name: run-event-registration
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: apps/backend/Dockerfile
+    environment:
+      NODE_ENV: production
+      BACKEND_PORT: 3000
+      DB_PATH: /data/app.db
+    volumes:
+      - registration-data:/data
+    expose:
+      - "3000"
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - fetch('http://127.0.0.1:3000/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  public-web:
+    build:
+      context: .
+      dockerfile: apps/public-web/Dockerfile
+      args:
+        VITE_API_URL: ${API_PUBLIC_URL:?API_PUBLIC_URL wajib diisi}
+    expose:
+      - "80"
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  admin-dashboard:
+    build:
+      context: .
+      dockerfile: apps/admin-dashboard/Dockerfile
+      args:
+        VITE_API_URL: ${API_PUBLIC_URL:?API_PUBLIC_URL wajib diisi}
+    expose:
+      - "80"
+    init: true
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://127.0.0.1/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  caddy:
+    image: caddy:2-alpine
+    environment:
+      PUBLIC_DOMAIN: ${PUBLIC_DOMAIN:?PUBLIC_DOMAIN wajib diisi}
+      ADMIN_DOMAIN: ${ADMIN_DOMAIN:?ADMIN_DOMAIN wajib diisi}
+      API_DOMAIN: ${API_DOMAIN:?API_DOMAIN wajib diisi}
+      ACME_EMAIL: ${ACME_EMAIL:?ACME_EMAIL wajib diisi}
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      backend:
+        condition: service_healthy
+      public-web:
+        condition: service_healthy
+      admin-dashboard:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  registration-data:
+    name: run-event-registration-data
+  caddy-data:
+    name: run-event-caddy-data
+  caddy-config:
+    name: run-event-caddy-config
