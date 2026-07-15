@@ -1,3 +1,16 @@
+# Aplikasi Pendaftaran Event Lari dan Pengujian Otomatis Menggunakan Selenium WebDriver
+
+Disusun oleh:
+
+| Data | Keterangan |
+| --- | --- |
+| Nama | Panji Jaya Sutra |
+| NIM | 20220801517 |
+| Program Studi | [Teknik Informatika] |
+| Mata Kuliah | Software Quality Assurance |
+| Dosen Pengampu | [Isi nama dosen] |
+| Kampus | Universitas Esa Unggul |
+
 # Run Event Registration PoC
 
 Proof of concept pendaftaran event lari untuk demonstrasi test automation dengan Selenium WebDriver. Repository ini menggunakan monorepo npm dan terdiri dari empat service sederhana.
