@@ -1,4 +1,17 @@
-# Rencana Pengembangan Aplikasi Pendaftaran Event Lari
+# Aplikasi Pendaftaran Event Lari dan Pengujian Otomatis Menggunakan Selenium WebDriver
+
+Disusun oleh:
+
+| Data | Keterangan |
+| --- | --- |
+| Nama | Panji Jaya Sutra |
+| NIM | 20220801517 |
+| Program Studi | [Teknik Informatika] |
+| Mata Kuliah | Software Quality Assurance |
+| Dosen Pengampu | [Isi nama dosen] |
+| Kampus | Universitas Esa Unggul |
+
+## Rencana Pengembangan Aplikasi Pendaftaran Event Lari
 
 ## 1. Tujuan
 
