@@ -10,7 +10,20 @@ dotenv.config({
 
 const defaultDatabasePath = fileURLToPath(new URL('../data/app.db', import.meta.url))
 const database = createDatabase(process.env.DB_PATH || defaultDatabasePath)
-const app = createApp(database)
+const sessionTtlSeconds = Number(process.env.ADMIN_SESSION_TTL_SECONDS || 3600)
+const allowedOrigins = (process.env.CORS_ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((origin) => origin.trim())
+  .filter(Boolean)
+const app = createApp(database, {
+  allowedOrigins,
+  auth: {
+    adminUsername: process.env.ADMIN_USERNAME,
+    adminPasswordHash: process.env.ADMIN_PASSWORD_HASH,
+    sessionTtlSeconds,
+    secureCookies: process.env.NODE_ENV === 'production'
+  }
+})
 const port = Number(process.env.BACKEND_PORT || 3000)
 
 const server = app.listen(port, () => {

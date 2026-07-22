@@ -37,6 +37,19 @@ export function createDatabase(databasePath) {
       created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (event_id) REFERENCES events(id)
     );
+
+    CREATE TABLE IF NOT EXISTS admin_sessions (
+      token_hash TEXT PRIMARY KEY,
+      username TEXT NOT NULL,
+      expires_at INTEGER NOT NULL,
+      created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+
+    CREATE INDEX IF NOT EXISTS idx_admin_sessions_expires_at
+      ON admin_sessions(expires_at);
+
+    CREATE UNIQUE INDEX IF NOT EXISTS idx_registrations_event_email_unique
+      ON registrations(event_id, lower(email));
   `)
 
   database.prepare(`

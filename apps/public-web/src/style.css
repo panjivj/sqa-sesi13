@@ -213,6 +213,17 @@ textarea {
   font-weight: 500;
 }
 
+.field-error {
+  display: block;
+  color: #a5362c;
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+.terms .field-error {
+  margin-top: 5px;
+}
+
 .terms {
   display: flex;
   align-items: flex-start;

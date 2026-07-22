@@ -53,6 +53,8 @@ Karena proses test ingin diamati secara langsung dari komputer lokal, konfiguras
 SELENIUM_HEADLESS=false
 SELENIUM_STEP_DELAY_MS=500
 SELENIUM_PAUSE_AFTER_TEST_MS=3000
+SELENIUM_ADMIN_USERNAME=admin
+SELENIUM_ADMIN_PASSWORD=123456
 ```
 
 Keterangan:
@@ -100,9 +102,10 @@ Alur test yang digunakan pada mode `dev` dan `prod` tetap sama:
 7. Memastikan pesan berhasil tampil.
 8. Menyimpan email unik dan kode registrasi dari halaman.
 9. Membuka admin dashboard.
-10. Memastikan email, kode registrasi, dan kategori peserta muncul pada tabel.
-11. Menyimpan screenshot apabila test gagal.
-12. Menutup browser setelah jeda akhir selesai.
+10. Login menggunakan kredensial admin dari `.env`.
+11. Memastikan email, kode registrasi, dan kategori peserta muncul pada tabel.
+12. Menyimpan screenshot apabila test gagal.
+13. Menutup browser setelah jeda akhir selesai.
 
 Ringkasan alur:
 
@@ -117,6 +120,8 @@ Simpan email dan kode registrasi
         ↓
 Buka admin dashboard
         ↓
+Login sebagai admin
+        ↓
 Verifikasi data peserta
 ```
 
@@ -124,7 +129,7 @@ Verifikasi data peserta
 
 Mode production akan membuat data registrasi nyata pada database cloud. Data test harus menggunakan nama dan email unik agar mudah dikenali dan tidak bertabrakan dengan eksekusi sebelumnya.
 
-Dataset peserta disimpan di `apps/e2e-tests/fixtures/participants.json` pada object `registrationSuccess`. Placeholder `{{runId}}` pada nama dan email akan diganti otomatis saat test dijalankan. Placeholder pada email wajib dipertahankan agar Selenium dapat membedakan setiap registrasi.
+Dataset peserta disimpan di `apps/e2e-tests/fixtures/participants.json` pada object `registrationSuccess`, `registrationInvalid`, `registrationDuplicate`, dan `registrationSearch`. Placeholder `{{runId}}` akan diganti otomatis saat test dijalankan dan wajib dipertahankan pada email agar Selenium dapat membedakan setiap registrasi.
 
 Contoh:
 
@@ -148,4 +153,4 @@ Sebelum test dijalankan:
 
 ## Batas Tahap 5
 
-Implementasi Tahap 5 hanya akan membuat satu skenario end-to-end utama dengan dukungan dua mode tersebut. Test tambahan yang tidak mendukung alur registrasi dan verifikasi dashboard tidak perlu dibuat untuk proof of concept ini.
+Tahap 5 awalnya hanya membuat satu skenario end-to-end utama dengan dukungan dua mode. Cakupan kemudian diperluas menjadi dua belas test case untuk validasi registrasi, email duplikat, pencarian peserta, autentikasi admin, edit, dan delete.

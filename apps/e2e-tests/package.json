@@ -4,8 +4,12 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "test:dev": "node test/registration.test.js --mode dev",
-    "test:prod": "node test/registration.test.js --mode prod"
+    "test:registration:dev": "node test/registration.test.js --mode dev",
+    "test:registration:prod": "node test/registration.test.js --mode prod",
+    "test:auth:dev": "node test/authentication.test.js --mode dev",
+    "test:auth:prod": "node test/authentication.test.js --mode prod",
+    "test:dev": "npm run test:registration:dev && npm run test:auth:dev",
+    "test:prod": "npm run test:registration:prod && npm run test:auth:prod"
   },
   "dependencies": {
     "dotenv": "^17.4.2",

@@ -140,12 +140,18 @@ ADMIN_DOMAIN=admin-event.example.com
 API_DOMAIN=api-event.example.com
 API_PUBLIC_URL=https://api-event.example.com
 ACME_EMAIL=admin@example.com
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD_HASH=<HASH_SCRYPT_PASSWORD_ADMIN>
+ADMIN_SESSION_TTL_SECONDS=3600
 ```
 
 Ketentuan:
 
 - `API_PUBLIC_URL` harus menggunakan domain yang sama dengan `API_DOMAIN` dan diawali `https://`.
 - `ACME_EMAIL` digunakan Caddy untuk pengelolaan sertifikat.
+- `ADMIN_USERNAME` menentukan username akun dashboard.
+- `ADMIN_PASSWORD_HASH` harus berisi hash `scrypt` password admin, bukan password mentah.
+- `ADMIN_SESSION_TTL_SECONDS` menentukan masa berlaku sesi admin dalam detik.
 - Jangan menambahkan `http://` atau `https://` pada tiga variable `*_DOMAIN`.
 - `.env.production` tidak masuk Git.
 
@@ -206,6 +212,9 @@ Pada komputer lokal, edit file `.env` repository:
 PROD_PUBLIC_WEB_URL=https://event.example.com
 PROD_ADMIN_DASHBOARD_URL=https://admin-event.example.com
 
+SELENIUM_ADMIN_USERNAME=admin
+SELENIUM_ADMIN_PASSWORD=123456
+
 SELENIUM_HEADLESS=false
 SELENIUM_STEP_DELAY_MS=500
 SELENIUM_PAUSE_AFTER_TEST_MS=3000
@@ -217,7 +226,9 @@ Jalankan:
 npm run test:e2e:prod
 ```
 
-Test membuat data peserta nyata pada SQLite production. Data menggunakan nama berawalan `Selenium Test` dan email unik, tetapi tidak dihapus otomatis.
+Perintah tersebut menjalankan delapan test case registrasi/pengelolaan data dan empat test case autentikasi. Suite membuat delapan registrasi nyata; `TC-12` menghapus satu data miliknya sendiri sehingga pertambahan bersih maksimal tujuh data. Data lain menggunakan nama dan email unik, tetapi tidak dihapus otomatis.
+
+Gunakan `npm run test:e2e:auth:prod` apabila hanya ingin menjalankan test autentikasi tanpa membuat registrasi peserta baru.
 
 ## 9. Update Deployment
 
@@ -277,6 +288,8 @@ sudo docker compose --env-file .env.production start backend
 Ganti `NAMA_BACKUP.tar.gz` dengan file yang akan dipulihkan.
 
 ## 11. Operasional Dasar
+
+Dashboard menyediakan edit dan delete registrasi. Delete bersifat permanen dan langsung menghapus baris dari SQLite. Buat backup sebelum penghapusan data dalam jumlah besar. Selenium hanya menghapus registrasi unik yang dibuat sendiri oleh `TC-12`.
 
 Melihat status:
 
@@ -367,9 +380,9 @@ sudo docker compose --env-file .env.production exec backend ls -la /data
 
 Pastikan volume `/data` dapat ditulis dan hanya ada satu container backend.
 
-### Dashboard dapat diakses publik
+### Keamanan dashboard
 
-Dashboard proof of concept ini memang tidak memiliki autentikasi. Jangan menyimpan data pribadi sungguhan dan jangan gunakan deployment ini sebagai aplikasi production nyata sebelum autentikasi serta perlindungan data ditambahkan.
+Dashboard dilindungi oleh satu akun admin yang dikonfigurasi melalui environment variable. Ganti hash password demo sebelum deployment dan gunakan HTTPS agar cookie sesi dikirim dengan aman. Proof of concept ini belum memiliki manajemen pengguna, pemulihan password, pembatasan percobaan login, atau audit log, sehingga jangan gunakan data pribadi sungguhan tanpa penilaian keamanan tambahan.
 
 ## File Deployment di Repository
 

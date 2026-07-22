@@ -8,6 +8,7 @@ const eventError = ref('')
 const isSubmitting = ref(false)
 const submitError = ref('')
 const registrationCode = ref('')
+const fieldErrors = reactive({})
 
 const form = reactive({
   name: '',
@@ -32,6 +33,47 @@ function formatEventDate(value) {
   }).format(new Date(`${value}T00:00:00`))
 }
 
+function clearFieldError(field) {
+  delete fieldErrors[field]
+}
+
+function clearFieldErrors() {
+  for (const field of Object.keys(fieldErrors)) {
+    delete fieldErrors[field]
+  }
+}
+
+function validateForm() {
+  const requiredFields = [
+    'name',
+    'email',
+    'phone',
+    'gender',
+    'birth_date',
+    'address',
+    'race_category',
+    'shirt_size',
+    'emergency_contact_name',
+    'emergency_contact_phone'
+  ]
+
+  for (const field of requiredFields) {
+    if (typeof form[field] !== 'string' || form[field].trim() === '') {
+      fieldErrors[field] = 'Field wajib diisi'
+    }
+  }
+
+  if (form.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) {
+    fieldErrors.email = 'Format email tidak valid'
+  }
+
+  if (!form.agree_to_terms) {
+    fieldErrors.agree_to_terms = 'Persetujuan wajib diberikan'
+  }
+
+  return Object.keys(fieldErrors).length === 0
+}
+
 async function loadEvent() {
   try {
     const response = await fetch(`${apiUrl}/api/event`)
@@ -45,9 +87,16 @@ async function loadEvent() {
 }
 
 async function submitRegistration() {
-  isSubmitting.value = true
   submitError.value = ''
   registrationCode.value = ''
+  clearFieldErrors()
+
+  if (!validateForm()) {
+    submitError.value = 'Periksa kembali data pendaftaran yang ditandai.'
+    return
+  }
+
+  isSubmitting.value = true
 
   try {
     const response = await fetch(`${apiUrl}/api/registrations`, {
@@ -58,6 +107,10 @@ async function submitRegistration() {
     const body = await response.json()
 
     if (!response.ok) {
+      if (body.error?.fields) {
+        Object.assign(fieldErrors, body.error.fields)
+      }
+
       throw new Error(body.error?.message || 'Pendaftaran gagal dikirim')
     }
 
@@ -131,42 +184,48 @@ onMounted(loadEvent)
         {{ submitError }}
       </p>
 
-      <form data-testid="registration-form" @submit.prevent="submitRegistration">
+      <form data-testid="registration-form" novalidate @submit.prevent="submitRegistration">
         <fieldset>
           <legend>Data diri</legend>
           <div class="form-grid">
             <label class="full-width">
               Nama lengkap
-              <input v-model="form.name" data-testid="name-input" name="name" autocomplete="name" required />
+              <input v-model="form.name" data-testid="name-input" name="name" autocomplete="name" required @input="clearFieldError('name')" />
+              <span v-if="fieldErrors.name" class="field-error" data-testid="name-error">{{ fieldErrors.name }}</span>
             </label>
 
             <label>
               Email
-              <input v-model="form.email" data-testid="email-input" name="email" type="email" autocomplete="email" required />
+              <input v-model="form.email" data-testid="email-input" name="email" type="email" autocomplete="email" required @input="clearFieldError('email')" />
+              <span v-if="fieldErrors.email" class="field-error" data-testid="email-error">{{ fieldErrors.email }}</span>
             </label>
 
             <label>
               Nomor telepon
-              <input v-model="form.phone" data-testid="phone-input" name="phone" type="tel" autocomplete="tel" required />
+              <input v-model="form.phone" data-testid="phone-input" name="phone" type="tel" autocomplete="tel" required @input="clearFieldError('phone')" />
+              <span v-if="fieldErrors.phone" class="field-error" data-testid="phone-error">{{ fieldErrors.phone }}</span>
             </label>
 
             <label>
               Jenis kelamin
-              <select v-model="form.gender" data-testid="gender-select" name="gender" required>
+              <select v-model="form.gender" data-testid="gender-select" name="gender" required @change="clearFieldError('gender')">
                 <option disabled value="">Pilih jenis kelamin</option>
                 <option value="Laki-laki">Laki-laki</option>
                 <option value="Perempuan">Perempuan</option>
               </select>
+              <span v-if="fieldErrors.gender" class="field-error" data-testid="gender-error">{{ fieldErrors.gender }}</span>
             </label>
 
             <label>
               Tanggal lahir
-              <input v-model="form.birth_date" data-testid="birth-date-input" name="birth_date" type="date" required />
+              <input v-model="form.birth_date" data-testid="birth-date-input" name="birth_date" type="date" required @input="clearFieldError('birth_date')" />
+              <span v-if="fieldErrors.birth_date" class="field-error" data-testid="birth-date-error">{{ fieldErrors.birth_date }}</span>
             </label>
 
             <label class="full-width">
               Alamat
-              <textarea v-model="form.address" data-testid="address-input" name="address" rows="3" required></textarea>
+              <textarea v-model="form.address" data-testid="address-input" name="address" rows="3" required @input="clearFieldError('address')"></textarea>
+              <span v-if="fieldErrors.address" class="field-error" data-testid="address-error">{{ fieldErrors.address }}</span>
             </label>
           </div>
         </fieldset>
@@ -176,21 +235,23 @@ onMounted(loadEvent)
           <div class="form-grid">
             <label>
               Kategori lari
-              <select v-model="form.race_category" data-testid="race-category-select" name="race_category" required>
+              <select v-model="form.race_category" data-testid="race-category-select" name="race_category" required @change="clearFieldError('race_category')">
                 <option disabled value="">Pilih kategori</option>
                 <option value="5K">5K</option>
                 <option value="10K">10K</option>
               </select>
+              <span v-if="fieldErrors.race_category" class="field-error" data-testid="race-category-error">{{ fieldErrors.race_category }}</span>
             </label>
 
             <label>
               Ukuran jersey
-              <select v-model="form.shirt_size" data-testid="shirt-size-select" name="shirt_size" required>
+              <select v-model="form.shirt_size" data-testid="shirt-size-select" name="shirt_size" required @change="clearFieldError('shirt_size')">
                 <option disabled value="">Pilih ukuran</option>
                 <option v-for="size in ['S', 'M', 'L', 'XL', 'XXL']" :key="size" :value="size">
                   {{ size }}
                 </option>
               </select>
+              <span v-if="fieldErrors.shirt_size" class="field-error" data-testid="shirt-size-error">{{ fieldErrors.shirt_size }}</span>
             </label>
           </div>
         </fieldset>
@@ -205,7 +266,9 @@ onMounted(loadEvent)
                 data-testid="emergency-name-input"
                 name="emergency_contact_name"
                 required
+                @input="clearFieldError('emergency_contact_name')"
               />
+              <span v-if="fieldErrors.emergency_contact_name" class="field-error" data-testid="emergency-name-error">{{ fieldErrors.emergency_contact_name }}</span>
             </label>
 
             <label>
@@ -216,7 +279,9 @@ onMounted(loadEvent)
                 name="emergency_contact_phone"
                 type="tel"
                 required
+                @input="clearFieldError('emergency_contact_phone')"
               />
+              <span v-if="fieldErrors.emergency_contact_phone" class="field-error" data-testid="emergency-phone-error">{{ fieldErrors.emergency_contact_phone }}</span>
             </label>
 
             <label class="full-width">
@@ -233,8 +298,11 @@ onMounted(loadEvent)
         </fieldset>
 
         <label class="terms">
-          <input v-model="form.agree_to_terms" data-testid="agree-terms-input" name="agree_to_terms" type="checkbox" required />
-          <span>Saya menyatakan data yang diberikan benar dan bersedia mengikuti peraturan event.</span>
+          <input v-model="form.agree_to_terms" data-testid="agree-terms-input" name="agree_to_terms" type="checkbox" required @change="clearFieldError('agree_to_terms')" />
+          <span>
+            Saya menyatakan data yang diberikan benar dan bersedia mengikuti peraturan event.
+            <small v-if="fieldErrors.agree_to_terms" class="field-error" data-testid="agree-terms-error">{{ fieldErrors.agree_to_terms }}</small>
+          </span>
         </label>
 
         <button data-testid="submit-registration" type="submit" :disabled="isSubmitting">
