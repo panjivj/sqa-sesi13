@@ -36,7 +36,11 @@ Public web → isi formulir → simpan ke SQLite → login admin → buka dashbo
 
 ## Test Suite Selenium dan Login Admin
 
-Selenium memiliki delapan test case registrasi dan pengelolaan data serta empat test case autentikasi admin. Tabel berikut dapat digunakan sebagai lembar pelaksanaan pengujian. Nilai `{{runId}}` dibuat otomatis pada setiap eksekusi agar email peserta tetap unik.
+### Hasil Pengujian Black Box
+
+Pengujian menggunakan metode **black box**, yaitu memeriksa fungsi aplikasi melalui data input, tindakan pengguna, dan keluaran yang terlihat tanpa bergantung pada struktur kode internal. Selenium WebDriver bertindak sebagai pengguna pada public web dan dashboard admin, kemudian membandingkan hasil aktual dengan hasil yang diharapkan.
+
+Pengujian terakhir dijalankan pada environment production tanggal **23 Juli 2026** melalui public web `https://running-event.esgul.my.id` dan dashboard `https://dashboard-event.esgul.my.id`. Selenium memiliki delapan test case registrasi dan pengelolaan data serta empat test case autentikasi admin. Nilai `{{runId}}` dibuat otomatis pada setiap eksekusi agar email peserta tetap unik.
 
 | ID | Skenario Pengujian | Test Case (Data Input) | Hasil yang Diharapkan | Hasil Aktual | Status |
 | --- | --- | --- | --- | --- | --- |
@@ -53,6 +57,19 @@ Selenium memiliki delapan test case registrasi dan pengelolaan data serta empat 
 | `TC-11` | Membatalkan penghapusan registrasi | Email: `selenium.delete.cancel.{{runId}}@example.com`<br>Aksi konfirmasi: `Batal` | Dialog konfirmasi ditutup tanpa menghapus registrasi; data tetap tersedia pada dashboard | Data registrasi tetap ditemukan setelah pembatalan | Lulus |
 | `TC-12` | Mengonfirmasi penghapusan registrasi | Email: `selenium.delete.{{runId}}@example.com`<br>Aksi konfirmasi: `OK` | Pesan berhasil dihapus tampil; hasil pencarian menjadi kosong dan registrasi tidak ditemukan kembali | Data terhapus dan tidak tampil lagi pada hasil pencarian | Lulus |
 
+#### Ringkasan Hasil Black Box
+
+| Kelompok fungsi | Test case | Jumlah diuji | Lulus | Gagal |
+| --- | --- | ---: | ---: | ---: |
+| Registrasi dan validasi form | `TC-01`–`TC-03` | 3 | 3 | 0 |
+| Pencarian dashboard | `TC-04` | 1 | 1 | 0 |
+| Autentikasi admin | `TC-05`–`TC-08` | 4 | 4 | 0 |
+| Edit registrasi | `TC-09`–`TC-10` | 2 | 2 | 0 |
+| Delete registrasi | `TC-11`–`TC-12` | 2 | 2 | 0 |
+| **Total** | **`TC-01`–`TC-12`** | **12** | **12** | **0** |
+
+Persentase keberhasilan pengujian dihitung dengan rumus `(jumlah test lulus / jumlah test dijalankan) × 100%`, sehingga hasil pengujian black box terakhir adalah **(12 / 12) × 100% = 100%**. Berdasarkan hasil tersebut, seluruh fungsi yang tercakup dalam skenario pengujian menghasilkan keluaran sesuai harapan.
+
 Fitur pendukung yang telah diimplementasikan:
 
 - Pesan validasi per field dengan atribut `data-testid` yang stabil.
@@ -66,7 +83,7 @@ Fitur pendukung yang telah diimplementasikan:
 - Fixture terpisah dan screenshot kegagalan yang dapat diidentifikasi untuk setiap test case.
 - Helper login Selenium untuk test case yang memerlukan akses dashboard.
 
-Rencana dan catatan implementasi lengkap tersedia di [plan.md](plan.md). Seluruh `TC-01` sampai `TC-12` sudah tersedia sebagai test Selenium mandiri dan telah lulus pada pengujian development terakhir.
+Rencana dan catatan implementasi lengkap tersedia di [plan.md](plan.md). Seluruh `TC-01` sampai `TC-12` sudah tersedia sebagai test Selenium mandiri dan telah lulus pada pengujian development serta production terakhir.
 
 ### Kredensial Login Demo
 

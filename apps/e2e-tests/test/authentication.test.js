@@ -173,12 +173,12 @@ async function waitForDashboard(driver) {
   return dashboard
 }
 
-async function runCase(testCaseId, scenario) {
+async function runCase(testCaseId, description, scenario) {
+  console.log(`▶ Menjalankan ${testCaseId}: ${description}`)
   const driver = await createDriver(config)
 
   try {
     await scenario(driver)
-    console.log(`✓ ${testCaseId} lulus`)
   } catch (error) {
     try {
       await saveFailureScreenshot(driver, testCaseId, config.mode)
@@ -200,7 +200,7 @@ await checkTarget(config)
 console.log(`Menjalankan test autentikasi Selenium dalam mode ${config.mode.toUpperCase()}`)
 
 test('TC-05 login dengan kredensial admin valid', async () => {
-  await runCase('TC-05', async (driver) => {
+  await runCase('TC-05', 'login dengan kredensial admin valid', async (driver) => {
     await openLoginPage(driver)
     await submitLogin(driver)
     await waitForDashboard(driver)
@@ -214,7 +214,7 @@ test('TC-05 login dengan kredensial admin valid', async () => {
 })
 
 test('TC-06 login dengan kredensial admin salah', async () => {
-  await runCase('TC-06', async (driver) => {
+  await runCase('TC-06', 'login dengan kredensial admin salah', async (driver) => {
     await openLoginPage(driver)
     await submitLogin(driver, `${config.adminPassword}-salah`)
 
@@ -233,7 +233,7 @@ test('TC-06 login dengan kredensial admin salah', async () => {
 })
 
 test('TC-07 akses dashboard tanpa autentikasi', async () => {
-  await runCase('TC-07', async (driver) => {
+  await runCase('TC-07', 'akses dashboard tanpa autentikasi', async (driver) => {
     await openLoginPage(driver)
 
     assert.equal(
@@ -248,7 +248,7 @@ test('TC-07 akses dashboard tanpa autentikasi', async () => {
 })
 
 test('TC-08 logout mengakhiri sesi admin', async () => {
-  await runCase('TC-08', async (driver) => {
+  await runCase('TC-08', 'logout mengakhiri sesi admin', async (driver) => {
     await openLoginPage(driver)
     await submitLogin(driver)
     await waitForDashboard(driver)

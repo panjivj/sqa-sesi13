@@ -10,3 +10,5 @@ screenshots/
 npm-debug.log*
 .DS_Store
 laporan.md
+laporan/*.pdf
+laporan/*.docx

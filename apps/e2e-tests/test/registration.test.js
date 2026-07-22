@@ -354,12 +354,12 @@ async function openEditForm(driver, row) {
   return editForm
 }
 
-async function runCase(testCaseId, scenario) {
+async function runCase(testCaseId, description, scenario) {
+  console.log(`▶ Menjalankan ${testCaseId}: ${description}`)
   const driver = await createDriver(config)
 
   try {
     await scenario(driver)
-    console.log(`✓ ${testCaseId} lulus`)
   } catch (error) {
     try {
       await saveFailureScreenshot(driver, testCaseId, config.mode)
@@ -384,7 +384,7 @@ await Promise.all([
 console.log(`Menjalankan test registrasi Selenium dalam mode ${config.mode.toUpperCase()}`)
 
 test('TC-01 registrasi valid tersimpan dan tampil pada dashboard', async () => {
-  await runCase('TC-01', async (driver) => {
+  await runCase('TC-01', 'registrasi valid tersimpan dan tampil pada dashboard', async (driver) => {
     const participant = participants.registrationSuccess
     await openRegistrationPage(driver)
     await fillParticipant(driver, participant)
@@ -401,7 +401,7 @@ test('TC-01 registrasi valid tersimpan dan tampil pada dashboard', async () => {
 })
 
 test('TC-02 registrasi dengan format email tidak valid ditolak', async () => {
-  await runCase('TC-02', async (driver) => {
+  await runCase('TC-02', 'registrasi dengan format email tidak valid ditolak', async (driver) => {
     await openRegistrationPage(driver)
     await fillParticipant(driver, participants.registrationInvalid)
     await driver.findElement(By.css('[data-testid="submit-registration"]')).click()
@@ -421,7 +421,7 @@ test('TC-02 registrasi dengan format email tidak valid ditolak', async () => {
 })
 
 test('TC-03 registrasi dengan email yang sama ditolak', async () => {
-  await runCase('TC-03', async (driver) => {
+  await runCase('TC-03', 'registrasi dengan email yang sama ditolak', async (driver) => {
     const participant = participants.registrationDuplicate
     await openRegistrationPage(driver)
     await fillParticipant(driver, participant)
@@ -441,7 +441,7 @@ test('TC-03 registrasi dengan email yang sama ditolak', async () => {
 })
 
 test('TC-04 pencarian peserta menggunakan email', async () => {
-  await runCase('TC-04', async (driver) => {
+  await runCase('TC-04', 'pencarian peserta menggunakan email', async (driver) => {
     const participant = participants.registrationSearch
     await openRegistrationPage(driver)
     await fillParticipant(driver, participant)
@@ -459,7 +459,7 @@ test('TC-04 pencarian peserta menggunakan email', async () => {
 })
 
 test('TC-09 edit registrasi menggunakan data valid', async () => {
-  await runCase('TC-09', async (driver) => {
+  await runCase('TC-09', 'edit registrasi menggunakan data valid', async (driver) => {
     const participant = participants.registrationEdit
     const updatedName = `${participant.name} Diperbarui`
 
@@ -493,7 +493,7 @@ test('TC-09 edit registrasi menggunakan data valid', async () => {
 })
 
 test('TC-10 edit registrasi menggunakan email peserta lain ditolak', async () => {
-  await runCase('TC-10', async (driver) => {
+  await runCase('TC-10', 'edit registrasi menggunakan email peserta lain ditolak', async (driver) => {
     const source = participants.registrationEditConflictSource
     const target = participants.registrationEditConflictTarget
 
@@ -527,7 +527,7 @@ test('TC-10 edit registrasi menggunakan email peserta lain ditolak', async () =>
 })
 
 test('TC-11 membatalkan konfirmasi delete mempertahankan registrasi', async () => {
-  await runCase('TC-11', async (driver) => {
+  await runCase('TC-11', 'membatalkan konfirmasi delete mempertahankan registrasi', async (driver) => {
     const participant = participants.registrationDeleteCancel
 
     await openRegistrationPage(driver)
@@ -547,7 +547,7 @@ test('TC-11 membatalkan konfirmasi delete mempertahankan registrasi', async () =
 })
 
 test('TC-12 mengonfirmasi delete menghapus registrasi', async () => {
-  await runCase('TC-12', async (driver) => {
+  await runCase('TC-12', 'mengonfirmasi delete menghapus registrasi', async (driver) => {
     const participant = participants.registrationDelete
 
     await openRegistrationPage(driver)
